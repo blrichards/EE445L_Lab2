@@ -9,6 +9,9 @@
 
 #include <stdint.h>
 
+#ifndef FIXED_H_
+#define FIXED_H_
+
 /**
  * Output signed fixed point value to the display with a resolution of 0.01.
  * param: value: Value to be printed to display.
@@ -51,5 +54,4 @@ void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, in
  */
 void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]);
 
-
-
+#endif // FIXED_H_

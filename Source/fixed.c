@@ -8,13 +8,14 @@
 // Date of last revision: 9/10/2018
 // Hardware Configuration: N/A
 
-#include "fixed.h"
-#include "ST7735.h"
+#include "Fixed.h"
+
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ST7735.h"
 
 #define LCD_PLOT_MIN_X 0
 #define LCD_PLOT_MAX_X 127
