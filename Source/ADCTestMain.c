@@ -26,6 +26,7 @@
 // bottom of X-ohm potentiometer connected to ground
 // top of X-ohm potentiometer connected to +3.3V
 #include <stdint.h>
+#include <stdbool.h>
 #include "ADCSWTrigger.h"
 #include "ST7735.h"
 #include "PLL.h"
@@ -40,7 +41,12 @@ long StartCritical(void); // previous I bit, disable interrupts
 void EndCritical(long sr); // restore I bit to previous value
 void WaitForInterrupt(void); // low power mode
 
-volatile uint32_t ADCvalue;
+static const uint16_t ADCMaxNumValues = 1000;
+volatile uint32_t ADCTimeStamps[ADCMaxNumValues] = {0};
+volatile uint32_t ADCValues[ADCMaxNumValues] = {0};
+volatile uint32_t ADCJitter[ADCMaxNumValues - 1] = {0};
+
+volatile uint32_t ADCCursor = 0;
 
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
@@ -68,11 +74,21 @@ void Timer0A_Init100HzInt(void)
 
 void Timer0A_Handler(void)
 {
-    TIMER0_ICR_R = TIMER_ICR_TATOCINT; // acknowledge timer0A timeout
-    PF2 ^= 0x04; // profile
-    PF2 ^= 0x04; // profile
-    ADCvalue = ADC0_InSeq3();
-    PF2 ^= 0x04; // profile
+		if (ADCCursor < sizeof(ADCValues)) {
+				TIMER0_ICR_R = TIMER_ICR_TATOCINT; // acknowledge timer0A timeout
+				PF2 ^= 0x04; // profile
+				PF2 ^= 0x04; // profile
+				ADCTimeStamps[ADCCursor] = TIMER1_TAR_R;
+				ADCValues[ADCCursor] = ADC0_InSeq3();
+				++ADCCursor;
+				PF2 ^= 0x04; // profile
+		}
+}
+
+void ProcessADCValues(void) {
+		for (int i = 0; i < ADCMaxNumValues - 1; ++i)
+				ADCJitter[i] = ADCTimeStamps[i] - ADCTimeStamps[i + 1];
+		
 }
 
 int main(void)
@@ -88,9 +104,12 @@ int main(void)
     GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R & 0xFFFFF00F) + 0x00000000;
     GPIO_PORTF_AMSEL_R = 0; // disable analog functionality on PF
     PF2 = 0; // turn off LED
-	  ST7735_InitR(INITR_REDTAB);
-    EnableInterrupts();
-    while (1) {
-        PF1 ^= 0x02; // toggles when running in main
-    }
+		ST7735_InitR(INITR_REDTAB);
+		while (true) {
+				EnableInterrupts();
+				while (ADCCursor < sizeof(ADCValues)) {
+						PF1 ^= 0x02; // toggles when running in main
+				}
+				DisableInterrupts();
+		}
 }

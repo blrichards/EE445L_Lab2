@@ -99,3 +99,5 @@ uint32_t ADC0_InSeq3(void)
     ADC0_ISC_R = 0x0008; // 4) acknowledge completion
     return result;
 }
+
+
