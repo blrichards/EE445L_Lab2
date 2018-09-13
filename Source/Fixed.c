@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ST7735.h"
+#include "Types.h"
 
 #define LCD_PLOT_MIN_X 0
 #define LCD_PLOT_MAX_X 127
@@ -166,3 +167,27 @@ void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[])
         }
     }
 }
+
+void ST7735_PMFplotInit(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY, int32_t ADCSamples) {
+  ST7735_FillScreen(0);					//set screen to black
+  ST7735_FillRect(LCD_PLOT_MIN_X, LCD_PLOT_MIN_Y, LCD_PLOT_WIDTH, LCD_PLOT_HEIGHT ,ST7735_WHITE); //set white area for the graph
+  ST7735_SetCursor(0, 0);
+  printf("Lab 2 PMF, averaging\n%d point(s)", ADCSamples);
+  xMin = minX;			//min ADC value sampled (might want to keep it at 1 points - 64 then reset at 1 with the cycle complete)
+  xMax = maxX;			//max ADC and same as above
+  yMin = 0;			    //stream line to 0 since a value could have 0 occurances
+  yMax = maxY;			//max amount of occurences possible
+}
+
+void ST7735_PlotADCPMF(void){
+		entry *start = iterate(map);
+		do {
+			uint32_t adcValue = *(uint32_t*)getKey(entry);
+			uint32_t occurances = *(uint32_t*)getValue(entry);
+			int xCoordinate = (LCD_PLOT_WIDTH * (ADCValues[i] - xMin)) / (xMax - xMin);
+      int yCoordinate = ((LCD_PLOT_HEIGHT * (yMax - ADCOccurences[i])) / (yMax - yMin)) + LCD_PLOT_MIN_Y; //starting y point
+      int height = LCD_PLOT_MAX_Y - yCoordinate;
+      ST7735_DrawFastVLine(xCoordinate, yCoordinate, height, ST7735_BLACK);
+		} while ((start = iterate(NULL)) != NULL);
+	
+  }

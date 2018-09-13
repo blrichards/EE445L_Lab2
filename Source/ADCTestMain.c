@@ -27,6 +27,7 @@
 // top of X-ohm potentiometer connected to +3.3V
 #include <stdint.h>
 #include "ADCSWTrigger.h"
+#include "ST7735.h"
 #include "PLL.h"
 #include "tm4c123gh6pm.h"
 
@@ -87,6 +88,7 @@ int main(void)
     GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R & 0xFFFFF00F) + 0x00000000;
     GPIO_PORTF_AMSEL_R = 0; // disable analog functionality on PF
     PF2 = 0; // turn off LED
+	  ST7735_InitR(INITR_REDTAB);
     EnableInterrupts();
     while (1) {
         PF1 ^= 0x02; // toggles when running in main
