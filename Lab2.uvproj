@@ -416,9 +416,14 @@
               <FilePath>.\Source\ADCTestMain.c</FilePath>
             </File>
             <File>
-              <FileName>fixed.c</FileName>
+              <FileName>Fixed.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Source\fixed.c</FilePath>
+              <FilePath>.\Source\Fixed.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Timer.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -481,9 +486,14 @@
               <FilePath>.\Include\ADCSWTrigger.h</FilePath>
             </File>
             <File>
-              <FileName>fixed.h</FileName>
+              <FileName>Fixed.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Include\fixed.h</FilePath>
+              <FilePath>.\Include\Fixed.h</FilePath>
+            </File>
+            <File>
+              <FileName>Timer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Timer.h</FilePath>
             </File>
           </Files>
         </Group>
