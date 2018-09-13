@@ -179,15 +179,17 @@ void ST7735_PMFplotInit(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY, 
   yMax = maxY;			//max amount of occurences possible
 }
 
-void ST7735_PlotADCPMF(void){
-		entry *start = iterate(map);
-		do {
-			uint32_t adcValue = *(uint32_t*)getKey(entry);
-			uint32_t occurances = *(uint32_t*)getValue(entry);
-			int xCoordinate = (LCD_PLOT_WIDTH * (ADCValues[i] - xMin)) / (xMax - xMin);
-      int yCoordinate = ((LCD_PLOT_HEIGHT * (yMax - ADCOccurences[i])) / (yMax - yMin)) + LCD_PLOT_MIN_Y; //starting y point
-      int height = LCD_PLOT_MAX_Y - yCoordinate;
-      ST7735_DrawFastVLine(xCoordinate, yCoordinate, height, ST7735_BLACK);
-		} while ((start = iterate(NULL)) != NULL);
+void ST7735_PlotADCPMF(HashMap *adcValueOccurances){
+		entry *e = iterate(adcValueOccurances);
+		if (e == NULL)
+				return;
 	
-  }
+		do {
+				uint32_t adcValue = *(uint32_t*)getKey(e);
+				uint32_t occurances = *(uint32_t*)getValue(e);
+				int xCoordinate = (LCD_PLOT_WIDTH * (adcValue - xMin)) / (xMax - xMin);
+				int yCoordinate = ((LCD_PLOT_HEIGHT * (yMax - occurances)) / (yMax - yMin)) + LCD_PLOT_MIN_Y; //starting y point
+				int height = LCD_PLOT_MAX_Y - yCoordinate;
+				ST7735_DrawFastVLine(xCoordinate, yCoordinate, height, ST7735_BLACK);
+		} while ((e = iterate(NULL)) != NULL);
+}

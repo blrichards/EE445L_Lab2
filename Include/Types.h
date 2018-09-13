@@ -64,12 +64,20 @@ void capitalize(String *);
 /**
  * HashMap functions
  */
-void put(HashMap *map, void *key, void *value);
+void *put(HashMap *map, void *key, void *value);
 
 bool contains(HashMap *dict, void *key);
 
 void *at(HashMap *dict, void *key);
 
+void *getOrDefault(HashMap *dict, void *key, void *defaultValue);
+
 void clear(HashMap *dict);
+
+entry *iterate(HashMap *dict);
+
+void *getKey(entry *);
+
+void *getValue(entry *);
 
 #endif // TYPES_H

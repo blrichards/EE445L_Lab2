@@ -8,6 +8,7 @@
 // Hardware Configuration: N/A
 
 #include <stdint.h>
+#include "Types.h"
 
 #ifndef FIXED_H_
 #define FIXED_H_
@@ -56,6 +57,6 @@ void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]);
 
 void ST7735_PMFplotInit(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY, int32_t ADCSamples);
 
-void ST7735_PlotADCPMF(void);
+void ST7735_PlotADCPMF(HashMap *adcValueOccurances);
 
 #endif // FIXED_H_

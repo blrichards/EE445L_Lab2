@@ -70,12 +70,12 @@ entry* find(HashMap *dict, void *key) {
  * @summary: checks if the key exists in the dictionary, add it if it doesn't,
  *           and assigns the desired value in the _values array
  */
-void put(HashMap *dict, void *key, void *value) {
+void *put(HashMap *dict, void *key, void *value) {
     int h = hashKey(dict->keyType, key);
 
     if (dict->entrySet[h] == NULL) {
         dict->entrySet[h] = (entry*)new(ENTRY, 2, key, value);
-        return;
+        return getValue(dict->entrySet[h]);
     }
 
     entry *current = dict->entrySet[h];
@@ -84,6 +84,7 @@ void put(HashMap *dict, void *key, void *value) {
         current = current->next;
 
     current->next = (entry*)new(ENTRY, 2, key, value);
+		return getValue(current->next);
 }
 
 /* @func: contains
@@ -99,7 +100,14 @@ bool contains(HashMap *dict, void *key) {
 void *at(HashMap *dict, void *key) {
     entry *e = find(dict, key);
     assert(e != NULL);
-    return (e)->value;
+    return e->value;
+}
+
+void *getOrDefault(HashMap *dict, void *key, void *defaultValue) {
+		entry *e = find(dict, key);
+		if (e == NULL)
+				return put(dict, key, defaultValue);
+		return getValue(e);
 }
 
 void clear(HashMap *dict) {

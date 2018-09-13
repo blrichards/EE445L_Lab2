@@ -26,11 +26,14 @@
 // bottom of X-ohm potentiometer connected to ground
 // top of X-ohm potentiometer connected to +3.3V
 #include <stdint.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include "ADCSWTrigger.h"
 #include "ST7735.h"
 #include "PLL.h"
 #include "tm4c123gh6pm.h"
+#include "Types.h"
+#include "Fixed.h"
 
 #define PF2 (*((volatile uint32_t*)0x40025010))
 #define PF1 (*((volatile uint32_t*)0x40025008))
@@ -45,8 +48,8 @@ static const uint16_t ADCMaxNumValues = 1000;
 volatile uint32_t ADCTimeStamps[ADCMaxNumValues] = {0};
 volatile uint32_t ADCValues[ADCMaxNumValues] = {0};
 volatile uint32_t ADCJitter[ADCMaxNumValues - 1] = {0};
-
 volatile uint32_t ADCCursor = 0;
+HashMap *ADCValueOccurances = 0;
 
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
@@ -74,12 +77,16 @@ void Timer0A_Init100HzInt(void)
 
 void Timer0A_Handler(void)
 {
+		static const uint32_t *defaultValue = 0;
 		if (ADCCursor < sizeof(ADCValues)) {
 				TIMER0_ICR_R = TIMER_ICR_TATOCINT; // acknowledge timer0A timeout
 				PF2 ^= 0x04; // profile
 				PF2 ^= 0x04; // profile
 				ADCTimeStamps[ADCCursor] = TIMER1_TAR_R;
-				ADCValues[ADCCursor] = ADC0_InSeq3();
+				uint32_t value = ADC0_InSeq3();
+				ADCValues[ADCCursor] = value;
+				uint32_t *occurances = getOrDefault(ADCValueOccurances, &value, &defaultValue);
+				++(*occurances);
 				++ADCCursor;
 				PF2 ^= 0x04; // profile
 		}
@@ -88,7 +95,25 @@ void Timer0A_Handler(void)
 void ProcessADCValues(void) {
 		for (int i = 0; i < ADCMaxNumValues - 1; ++i)
 				ADCJitter[i] = ADCTimeStamps[i] - ADCTimeStamps[i + 1];
-		
+	
+		uint32_t maxValue = ADCValues[0];
+		uint32_t minValue = ADCValues[0];
+		uint32_t maxOccurances = 0;
+		uint32_t minOccurances = 0;
+		entry *e = iterate(ADCValueOccurances);
+		do {
+				uint32_t value = *(uint32_t*)getKey(e);
+				uint32_t occurances = *(uint32_t*)getValue(e);
+				maxValue = value > maxValue ? value : maxValue;
+				minValue = value < minValue ? value : minValue;
+				maxOccurances = occurances > maxOccurances ? occurances : maxOccurances;
+				minOccurances = occurances < minOccurances ? occurances : minOccurances;
+		} while ((e = iterate(NULL)) != NULL);
+		ST7735_PMFplotInit(minValue, maxValue, minOccurances, maxOccurances, 1);
+		ST7735_PlotADCPMF(ADCValueOccurances);
+		clear(ADCValueOccurances);
+		ADCCursor = 0;
+		TIMER1_TAR_R = 0xFFFFFFFF;
 }
 
 int main(void)
@@ -105,11 +130,13 @@ int main(void)
     GPIO_PORTF_AMSEL_R = 0; // disable analog functionality on PF
     PF2 = 0; // turn off LED
 		ST7735_InitR(INITR_REDTAB);
+		ADCValueOccurances = new(HASHMAP, 2, NUMBER, NUMBER);
 		while (true) {
 				EnableInterrupts();
 				while (ADCCursor < sizeof(ADCValues)) {
 						PF1 ^= 0x02; // toggles when running in main
 				}
 				DisableInterrupts();
+				ProcessADCValues();
 		}
 }

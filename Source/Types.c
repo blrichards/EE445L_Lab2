@@ -1,10 +1,10 @@
+#include "Types.h"
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <assert.h>
 #include <string.h>
 #include <stdint.h>
-
-#include "Types.h"
 
 String *newString(int num, va_list args) {
 		String *str = (String*)malloc(sizeof(String));
@@ -55,7 +55,7 @@ entry *newEntry(int num, va_list args) {
 }
 
 HashMap *newHashMap(int num, va_list args) {
-		assert(num == 0);
+		assert(num == 2);
 		HashMap *m = (HashMap*)malloc(sizeof(HashMap));
 
 		m->entrySet = (entry**)malloc(sizeof(entry*) * HASH_SIZE);
@@ -64,6 +64,9 @@ HashMap *newHashMap(int num, va_list args) {
 				m->keySet[i] = NULL;
 				m->entrySet[i] = NULL;
 		}
+		
+		m->keyType = va_arg(args, TYPE);
+		m->valueType = va_arg(args, TYPE);
 		
 		return m;
 }
