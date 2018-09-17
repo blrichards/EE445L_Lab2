@@ -38,6 +38,7 @@
 
 #define PF2 (*((volatile uint32_t*)0x40025010))
 #define PF1 (*((volatile uint32_t*)0x40025008))
+//#define NOISE_CALC 0;
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void); // Enable interrupts
@@ -96,8 +97,14 @@ void Timer0A_Handler(void)
 
 void ProcessADCValues(void)
 {
-    for (int i = 0; i < ADCMaxNumValues - 1; ++i)
-        ADCJitter[i] = ADCTimeStamps[i] - ADCTimeStamps[i + 1];
+	uint32_t minJitter = 0xFFFFFFFF;
+	uint32_t maxJitter = 0;
+    for (int i = 0; i < ADCMaxNumValues - 1; ++i){
+		ADCJitter[i] = ADCTimeStamps[i] - ADCTimeStamps[i+1];
+		if(ADCJitter[i] > maxJitter) maxJitter = ADCJitter[i];
+		if(ADCJitter[i] < minJitter) minJitter = ADCJitter[i];
+	}
+	uint32_t totalJitter = maxJitter - minJitter;
 
     uint32_t maxValue = ADCValues[0];
     uint32_t minValue = ADCValues[0];
@@ -119,6 +126,12 @@ void ProcessADCValues(void)
     TIMER1_TAILR_R = 0xFFFFFFFF;
 }
 
+#ifdef NOISE_CALC
+void SysTick_Handler(void){
+    NVIC_ST_RELOAD_R = 0x7999;     // reload value for high phase
+}
+#endif
+
 int main(void)
 {
     PLL_Init(Bus80MHz); // 80 MHz
@@ -138,6 +151,16 @@ int main(void)
 	  Heap_Init();
     ADCValueOccurances = new(HASHMAP, 2, NUMBER, NUMBER);
 	ST7735_PMFPlotInit(ADCPlotSamples);
+	NVIC_ST_CTRL_R = 0;           // disable SysTick during setup
+
+#ifdef NOISE_CALC
+	//For Deliverables Take out when not measuring Jitter
+	NVIC_ST_RELOAD_R = 7999;       // reload value for 500us
+	NVIC_ST_CURRENT_R = 0;        // any write to current clears it
+	NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF)|0x00000000; // priority 1
+	NVIC_ST_CTRL_R = 0x00000007;  // enable with core clock and interrupts
+#endif
+
     EnableInterrupts();
     while (true) {
         EnableInterrupts();
