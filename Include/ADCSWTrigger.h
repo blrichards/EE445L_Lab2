@@ -6,7 +6,6 @@
 // Daniel Valvano
 // August 6, 2015
 
-#include <stdint.h>
 /* This example accompanies the book
    "Embedded Systems: Real Time Interfacing to Arm Cortex M Microcontrollers",
    ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2015
@@ -22,6 +21,8 @@
  For more information about my classes, my research, and my books, see
  http://users.ece.utexas.edu/~valvano/
  */
+ 
+ #include <stdint.h>
 
 // There are many choices to make when using the ADC, and many
 // different combinations of settings will all do basically the
@@ -89,8 +90,3 @@ void ADC0_InitAllTriggerSeq3(uint32_t channelNum);
 // Input: none
 // Output: 12-bit result of ADC conversion
 uint32_t ADC0_InSeq3(void);
-
-//-----------Timer1_Init-------------
-// Timer that counts down continously 
-// at 80MHz
-void Timer1_Init(void);

@@ -426,11 +426,6 @@
               <FilePath>.\Source\Timer.c</FilePath>
             </File>
             <File>
-              <FileName>Types.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\Types.c</FilePath>
-            </File>
-            <File>
               <FileName>HashMap.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\HashMap.c</FilePath>
@@ -439,6 +434,11 @@
               <FileName>String.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\String.c</FilePath>
+            </File>
+            <File>
+              <FileName>Types.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Types.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -490,11 +490,26 @@
               <FileType>5</FileType>
               <FilePath>.\Library\tm4c123gh6pm.h</FilePath>
             </File>
+            <File>
+              <FileName>heap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\heap.c</FilePath>
+            </File>
+            <File>
+              <FileName>heap.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Library\heap.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Include</GroupName>
           <Files>
+            <File>
+              <FileName>Types.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Types.h</FilePath>
+            </File>
             <File>
               <FileName>ADCSWTrigger.h</FileName>
               <FileType>5</FileType>
@@ -509,11 +524,6 @@
               <FileName>Timer.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Include\Timer.h</FilePath>
-            </File>
-            <File>
-              <FileName>Types.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Include\Types.h</FilePath>
             </File>
           </Files>
         </Group>

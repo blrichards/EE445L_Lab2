@@ -21,8 +21,8 @@
  For more information about my classes, my research, and my books, see
  http://users.ece.utexas.edu/~valvano/
  */
-#include <stdint.h>
 #include "tm4c123gh6pm.h"
+#include <stdint.h>
 
 // There are many choices to make when using the ADC, and many
 // different combinations of settings will all do basically the
@@ -82,6 +82,7 @@ void ADC0_InitSWTriggerSeq3_Ch9(void)
     ADC0_SSCTL3_R = 0x0006; // 12) no TS0 D0, yes IE0 END0
     ADC0_IM_R &= ~0x0008; // 13) disable SS3 interrupts
     ADC0_ACTSS_R |= 0x0008; // 14) enable sample sequencer 3
+    ADC0_SAC_R = ADC_SAC_AVG_OFF; //how much sampling for the ADC
 }
 
 //------------ADC0_InSeq3------------
@@ -99,5 +100,3 @@ uint32_t ADC0_InSeq3(void)
     ADC0_ISC_R = 0x0008; // 4) acknowledge completion
     return result;
 }
-
-

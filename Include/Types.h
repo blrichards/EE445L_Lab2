@@ -3,17 +3,17 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#define HASH_SIZE 10000
+#define HASH_SIZE 1000
 
 typedef enum {
     STRING,
-		NUMBER,
+    NUMBER,
     ENTRY,
     HASHMAP
 } TYPE;
 
 typedef struct {
-    char *data;
+    char* data;
     int len;
     int cap;
 } String;
@@ -24,10 +24,10 @@ struct HashMap;
  * @brief: node for linked list to store collided entries
  */
 typedef struct entry {
-    struct entry *next;
-    void *key;
-    void *value;
-		struct HashMap *map;
+    struct entry* next;
+    void* key;
+    void* value;
+    struct HashMap* map;
 } entry;
 
 /* @struct: Dict
@@ -35,49 +35,49 @@ typedef struct entry {
  *         if words exist in the "dictionary"
  */
 typedef struct HashMap {
-    entry **entrySet;
-    void **keySet;
+    entry* entrySet[HASH_SIZE];
+    void* keySet[HASH_SIZE];
     int size;
-		TYPE keyType;
-		TYPE valueType;
+    TYPE keyType;
+    TYPE valueType;
 } HashMap;
 
-void *new(TYPE, int, ...);
+void* new (TYPE, int, ...);
 
-void delete(TYPE, void *);
+void delete (TYPE, void*);
 
 /**
  * String functions
  */
-void concat(String *, const String *);
+void concat(String*, const String*);
 
-void addChar(String *, const char);
+void addChar(String*, const char);
 
-void toLower(String *);
+void toLower(String*);
 
 void toUpper(String*);
 
-bool equals(String *, String *);
+bool equals(String*, String*);
 
-void capitalize(String *);
+void capitalize(String*);
 
 /**
  * HashMap functions
  */
-void *put(HashMap *map, void *key, void *value);
+void* put(HashMap* map, void* key, void* value);
 
-bool contains(HashMap *dict, void *key);
+bool contains(HashMap* dict, void* key);
 
-void *at(HashMap *dict, void *key);
+void* at(HashMap* dict, void* key);
 
-void *getOrDefault(HashMap *dict, void *key, void *defaultValue);
+void* getOrDefault(HashMap* dict, void* key, void* defaultValue);
 
-void clear(HashMap *dict);
+void clear(HashMap* dict);
 
-entry *iterate(HashMap *dict);
+entry* iterate(HashMap* dict);
 
-void *getKey(entry *);
+void* getKey(entry*);
 
-void *getValue(entry *);
+void* getValue(entry*);
 
 #endif // TYPES_H

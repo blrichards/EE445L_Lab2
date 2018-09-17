@@ -26,34 +26,36 @@
 // SYSDIV = 400/freq -1
 // bus frequency is 400MMHz/(SYSDIV+1)
 
+#include <stdint.h>
+
 // configure the system to get its clock from the PLL
 void PLL_Init(uint32_t freq);
-#define Bus80MHz     4
+#define Bus80MHz 4
 #define Bus80_000MHz 4
 #define Bus66_667MHz 5
 #define Bus50_000MHz 7
-#define Bus50MHz     7
+#define Bus50MHz 7
 #define Bus44_444MHz 8
 #define Bus40_000MHz 9
-#define Bus40MHz     9
+#define Bus40MHz 9
 #define Bus36_364MHz 10
 #define Bus33_333MHz 11
 #define Bus30_769MHz 12
 #define Bus28_571MHz 13
 #define Bus26_667MHz 14
 #define Bus25_000MHz 15
-#define Bus25MHz     15
+#define Bus25MHz 15
 #define Bus23_529MHz 16
 #define Bus22_222MHz 17
 #define Bus21_053MHz 18
 #define Bus20_000MHz 19
-#define Bus20MHz     19
+#define Bus20MHz 19
 #define Bus19_048MHz 20
 #define Bus18_182MHz 21
 #define Bus17_391MHz 22
 #define Bus16_667MHz 23
 #define Bus16_000MHz 24
-#define Bus16MHz     24
+#define Bus16MHz 24
 #define Bus15_385MHz 25
 #define Bus14_815MHz 26
 #define Bus14_286MHz 27
@@ -69,7 +71,7 @@ void PLL_Init(uint32_t freq);
 #define Bus10_526MHz 37
 #define Bus10_256MHz 38
 #define Bus10_000MHz 39
-#define Bus10MHz     39
+#define Bus10MHz 39
 #define Bus9_756MHz 40
 #define Bus9_524MHz 41
 #define Bus9_302MHz 42
@@ -80,7 +82,7 @@ void PLL_Init(uint32_t freq);
 #define Bus8_333MHz 47
 #define Bus8_163MHz 48
 #define Bus8_000MHz 49
-#define Bus8MHz     49
+#define Bus8MHz 49
 #define Bus7_843MHz 50
 #define Bus7_692MHz 51
 #define Bus7_547MHz 52
@@ -131,7 +133,7 @@ void PLL_Init(uint32_t freq);
 #define Bus4_082MHz 97
 #define Bus4_040MHz 98
 #define Bus4_000MHz 99
-#define Bus4MHz     99
+#define Bus4MHz 99
 #define Bus3_960MHz 100
 #define Bus3_922MHz 101
 #define Bus3_883MHz 102
@@ -160,7 +162,3 @@ void PLL_Init(uint32_t freq);
 #define Bus3_175MHz 125
 #define Bus3_150MHz 126
 #define Bus3_125MHz 127
-
-
-
-
