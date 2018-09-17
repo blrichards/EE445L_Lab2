@@ -66,8 +66,7 @@ void Timer0A_Init100HzInt(void)
     // **** timer0A initialization ****
     // configure for periodic mode
     TIMER0_TAMR_R = TIMER_TAMR_TAMR_PERIOD;
-    // TIMER0_TAILR_R = 799999; // start value for 100 Hz interrupts
-    TIMER0_TAILR_R = 79999;
+    TIMER0_TAILR_R = 799999; // start value for 100 Hz interrupts
     TIMER0_IMR_R |= TIMER_IMR_TATOIM; // enable timeout (rollover) interrupt
     TIMER0_ICR_R = TIMER_ICR_TATOCINT; // clear timer0A timeout flag
     TIMER0_CTL_R |= TIMER_CTL_TAEN; // enable timer0A 32-b, periodic, interrupts
@@ -116,13 +115,11 @@ void ProcessADCValues(void)
     ST7735_PlotADCPMF(ADCValueOccurances);
     clear(ADCValueOccurances);
     ADCCursor = 0;
-    TIMER1_TAR_R = 0xFFFFFFFF;
+    TIMER1_TAILR_R = 0xFFFFFFFF;
 }
 
 int main(void)
 {
-    Heap_Init();
-    ADCValueOccurances = new (HASHMAP, 2, NUMBER, NUMBER);
     PLL_Init(Bus80MHz); // 80 MHz
     SYSCTL_RCGCGPIO_R |= 0x20; // activate port F
     ADC0_InitSWTriggerSeq3_Ch9(); // allow time to finish activating
@@ -137,8 +134,8 @@ int main(void)
     GPIO_PORTF_AMSEL_R = 0; // disable analog functionality on PF
     PF2 = 0; // turn off LED
     Output_Init();
-
-    //ADCValueOccurances = new(HASHMAP, 2, NUMBER, NUMBER);
+	  Heap_Init();
+    ADCValueOccurances = new(HASHMAP, 2, NUMBER, NUMBER);
     EnableInterrupts();
     while (true) {
         EnableInterrupts();

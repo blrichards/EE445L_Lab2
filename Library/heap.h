@@ -31,7 +31,7 @@
 
 // feel free to change HEAP_SIZE_BYTES to however
 // big you want the heap to be
-#define HEAP_SIZE_BYTES (100000)
+#define HEAP_SIZE_BYTES (10000)
 #define HEAP_SIZE_WORDS (HEAP_SIZE_BYTES / sizeof(long))
 
 #define HEAP_OK 0
