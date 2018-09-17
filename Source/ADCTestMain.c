@@ -46,11 +46,12 @@ void EndCritical(long sr); // restore I bit to previous value
 void WaitForInterrupt(void); // low power mode
 
 static const uint16_t ADCMaxNumValues = 1000;
-volatile uint32_t ADCTimeStamps[ADCMaxNumValues] = { 0 };
-volatile uint32_t ADCValues[ADCMaxNumValues] = { 0 };
-volatile uint32_t ADCJitter[ADCMaxNumValues - 1] = { 0 };
-volatile uint32_t ADCCursor = 0;
-HashMap* ADCValueOccurances = NULL;
+static volatile uint32_t ADCTimeStamps[ADCMaxNumValues] = { 0 };
+static volatile uint32_t ADCValues[ADCMaxNumValues] = { 0 };
+static volatile uint32_t ADCJitter[ADCMaxNumValues - 1] = { 0 };
+static volatile uint32_t ADCCursor = 0;
+static HashMap* ADCValueOccurances = NULL;
+static volatile uint8_t ADCPlotSamples = 1;
 
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
@@ -111,7 +112,7 @@ void ProcessADCValues(void)
         maxOccurances = occurances > maxOccurances ? occurances : maxOccurances;
         minOccurances = occurances < minOccurances ? occurances : minOccurances;
     } while ((e = iterate(NULL)) != NULL);
-    ST7735_PMFplotInit(minValue, maxValue, minOccurances, maxOccurances, 1);
+    ST7735_PMFPlotUpdate(minValue, maxValue, minOccurances, maxOccurances, 1);
     ST7735_PlotADCPMF(ADCValueOccurances);
     clear(ADCValueOccurances);
     ADCCursor = 0;
@@ -136,6 +137,7 @@ int main(void)
     Output_Init();
 	  Heap_Init();
     ADCValueOccurances = new(HASHMAP, 2, NUMBER, NUMBER);
+	ST7735_PMFPlotInit(ADCPlotSamples);
     EnableInterrupts();
     while (true) {
         EnableInterrupts();

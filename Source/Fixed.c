@@ -168,14 +168,19 @@ void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[])
     }
 }
 
-void ST7735_PMFplotInit(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY, int32_t ADCSamples)
+void ST7735_PMFPlotInit(int32_t ADCSamples)
 {
-    ST7735_FillScreen(0); //set screen to black
+    ST7735_FillRect(0, 0, LCD_PLOT_WIDTH, LCD_PLOT_MIN_Y, ST7735_BLACK); //set screen to black
     ST7735_FillRect(LCD_PLOT_MIN_X, LCD_PLOT_MIN_Y, LCD_PLOT_WIDTH, LCD_PLOT_HEIGHT, ST7735_WHITE); //set white area for the graph
     ST7735_SetCursor(0, 0);
     ST7735_OutString("Lab 2 PMF, averaging\n");
     ST7735_OutChar(digitToASCII(ADCSamples));
     ST7735_OutString(" point(s)");
+}
+
+void ST7735_PMFPlotUpdate(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY, int32_t ADCSamples)
+{
+    ST7735_FillRect(LCD_PLOT_MIN_X, LCD_PLOT_MIN_Y, LCD_PLOT_WIDTH, LCD_PLOT_HEIGHT, ST7735_WHITE); //set white area for the graph
     xMin = minX; //min ADC value sampled (might want to keep it at 1 points - 64 then reset at 1 with the cycle complete)
     xMax = maxX; //max ADC and same as above
     yMin = 0; //stream line to 0 since a value could have 0 occurances

@@ -54,7 +54,9 @@ void ST7735_XYplotInit(char* title, int32_t minX, int32_t maxX, int32_t minY, in
  */
 void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]);
 
-void ST7735_PMFplotInit(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY, int32_t ADCSamples);
+void ST7735_PMFPlotInit(int32_t ADCSamples);
+
+void ST7735_PMFPlotUpdate(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY, int32_t ADCSamples);
 
 void ST7735_PlotADCPMF(HashMap* adcValueOccurances);
 
