@@ -119,8 +119,21 @@ void ProcessADCValues(void)
     TIMER1_TAILR_R = 0xFFFFFFFF;
 }
 
+void testDrawLine()
+{
+	PLL_Init(Bus80MHz);
+	Output_Init();
+	
+	for (size_t x1 = 0; x1 < 129; x1 += 20)
+		for (size_t x2 = 0; x2 < 129; x2 += 10)
+			for (size_t y1 = 0; y1 < 129; y1 += 20)
+				for (size_t y2 = 0; y2 < 129; y2 += 20)
+					ST7735_Line(x1, y1, x2, y2, ST7735_BLUE);
+}
+
 int main(void)
 {
+	/*
     PLL_Init(Bus80MHz); // 80 MHz
     SYSCTL_RCGCGPIO_R |= 0x20; // activate port F
     ADC0_InitSWTriggerSeq3_Ch9(); // allow time to finish activating
@@ -135,7 +148,7 @@ int main(void)
     GPIO_PORTF_AMSEL_R = 0; // disable analog functionality on PF
     PF2 = 0; // turn off LED
     Output_Init();
-	  Heap_Init();
+	Heap_Init();
     ADCValueOccurances = new(HASHMAP, 2, NUMBER, NUMBER);
 	ST7735_PMFPlotInit(ADCPlotSamples);
     EnableInterrupts();
@@ -147,4 +160,5 @@ int main(void)
         DisableInterrupts();
         ProcessADCValues();
     }
+	*/
 }

@@ -57,6 +57,7 @@
 #include "tm4c123gh6pm.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 
 // 16 rows (0 to 15) and 21 characters (0 to 20)
 // Requires (11 + size*size*6*8) bytes of transmission for each character
@@ -1885,6 +1886,69 @@ void ST7735_DrawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
         writedata(hi);
         writedata(lo);
     }
+}
+
+void ST7735_DrawFastDiagonalLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+{
+	float slope = ((float)(y2 - y1) / (float)(x2 - x1));
+	uint32_t yIntercept = y1 - (slope * x1);
+	
+	uint32_t xMin = fmin(x1, x2);
+	uint32_t xMax = fmax(x1, x2);
+	uint32_t yMin = fmin(y1, y2);
+	uint32_t yMax = fmax(y1, y2);
+	setAddrWindow(xMin, yMin, xMax - 1, yMax - 1);
+	
+	float xDistance = xMax - xMin;
+	float yDistance = yMax - yMin;
+	float distance = sqrt(pow(xDistance, 2) + pow(yDistance, 2));
+	uint32_t range = (distance / yDistance) / 2;
+	
+	for (uint32_t y = yMin; y < yMax; ++y) {
+		uint32_t xPos = (y - yIntercept) / slope;
+		uint32_t start = fmax(xPos - range, 0);
+		uint32_t stop = fmin(xPos + range, 128);
+		for (uint32_t x = start; x < stop; ++x)
+			ST7735_DrawPixel(x, y, color);
+	}		
+}
+
+//************* ST7735_Line********************************************
+//  Draws one line on the ST7735 color LCD
+//  Inputs: (x1,y1) is the start point
+//          (x2,y2) is the end point
+// x1,x2 are horizontal positions, columns from the left edge
+//               must be less than 128
+//               0 is on the left, 126 is near the right
+// y1,y2 are vertical positions, rows from the top edge
+//               must be less than 160
+//               159 is near the wires, 0 is the side opposite the wires
+//        color 16-bit color, which can be produced by ST7735_Color565() 
+// Output: none
+void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+{
+	if(x1 > 128 || x2 > 128 || x1 < 0 || x1 < 0) return;	//Values to be replaced with the defined max and mins
+	if(y1 > 160 || y2 > 160 || y1 < 0 || y1 < 0) return;
+
+	uint16_t xDistance;
+	uint16_t yDistance;
+
+	xDistance = x1 <= x2 ? x2 - x1 : x1 - x2;
+	yDistance = y1 <= y2 ? y2 - y1 : y1 - y2;
+
+	if(xDistance == 0){
+		if (y1 <= y2)
+			ST7735_DrawFastVLine(x1, y1, yDistance, color);
+		else
+			ST7735_DrawFastVLine(x1, y2, yDistance, color);
+	} else if (yDistance == 0) {
+		if (x1 <= x2)
+			ST7735_DrawFastHLine(x1, y1, xDistance, color);
+		else
+			ST7735_DrawFastHLine(x2, y1, xDistance, color);
+	} else {
+		ST7735_DrawFastDiagonalLine(x1, y1, x2, y2, color);
+	}
 }
 
 //------------ST7735_FillScreen------------
