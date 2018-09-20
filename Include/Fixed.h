@@ -2,9 +2,9 @@
 // Authors: Ryan Mitchell and Ben Richards
 // Initial Creation Date: 9/3/2018
 // Description: Header file for fixed.c
-// Lab Number: Lab01
+// Lab Number: Lab02
 // TA: Zee Lv
-// Date of last revision: 9/10/2018
+// Date of last revision: 9/17/2018
 // Hardware Configuration: N/A
 
 #include "Types.h"

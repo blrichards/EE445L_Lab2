@@ -1,3 +1,12 @@
+// ******** HashMap.c **************
+// Authors: Ben Richards
+// Initial Creation Date: 9/11/2018
+// Description: Hashmap for storing ADC Values
+// Lab Number: Lab02
+// TA: Zee Lv
+// Date of last revision: 9/17/2018
+// Hardware Configuration: N/A
+
 #include "types.h"
 #include <assert.h>
 #include <stdbool.h>

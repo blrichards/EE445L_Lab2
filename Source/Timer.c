@@ -1,8 +1,22 @@
+// ******** Timer.c **************
+// Authors: Ryan Mitchell and Ben Richards
+// Initial Creation Date: 9/11/2018
+// Description: Used to initialize a timer
+// for general purposes
+// Lab Number: Lab02
+// TA: Zee Lv
+// Date of last revision: 9/17/2018
+// Hardware Configuration: N/A
+
 #include "Timer.h"
 
 #include "tm4c123gh6pm.h"
 #include <stdint.h>
 
+/**
+ * Initialize a General timer in the TM4C123
+ * @param: reloadValue: Value to count down from for the timer
+ */
 void Timer1_Init(int reloadValue)
 {
     volatile uint32_t delay;

@@ -78,6 +78,10 @@ void Timer0A_Init100HzInt(void)
     NVIC_EN0_R = 1 << 19; // enable interrupt 19 in NVIC
 }
 
+/**
+ * Used for getting timestamps and ADC values at 100Hz
+ * sampling 1000 vlaues = 10 seconds
+ */
 void Timer0A_Handler(void)
 {
     static const uint32_t* defaultValue = 0;
@@ -95,6 +99,11 @@ void Timer0A_Handler(void)
     }
 }
 
+/**
+ * Processes the timer Jitter as well as the ADC values
+ * max and min, and occurances in order to make a distribution 
+ * graph on the ST7735
+ */
 void ProcessADCValues(void)
 {
 	uint32_t minJitter = 0xFFFFFFFF;
@@ -119,7 +128,7 @@ void ProcessADCValues(void)
         maxOccurances = occurances > maxOccurances ? occurances : maxOccurances;
         minOccurances = occurances < minOccurances ? occurances : minOccurances;
     } while ((e = iterate(NULL)) != NULL);
-    ST7735_PMFPlotUpdate(minValue, maxValue, minOccurances, maxOccurances, 1);
+    ST7735_PMFPlotUpdate(minValue - 10,  maxValue + 10, minOccurances, maxOccurances, 1);
     ST7735_PlotADCPMF(ADCValueOccurances);
     clear(ADCValueOccurances);
     ADCCursor = 0;
@@ -132,21 +141,25 @@ void SysTick_Handler(void){
 }
 #endif
 
+/**
+ * Used to test the ST7735_DrawLine user function
+ */
 void testDrawLine()
 {
 	PLL_Init(Bus80MHz);
 	Output_Init();
 	
-	for (size_t x1 = 0; x1 < 129; x1 += 20)
-		for (size_t x2 = 0; x2 < 129; x2 += 10)
-			for (size_t y1 = 0; y1 < 129; y1 += 20)
-				for (size_t y2 = 0; y2 < 129; y2 += 20)
+	for (size_t x1 = 0; x1 < 129; x1 += 16)
+		for (size_t x2 = 0; x2 < 129; x2 += 16)
+			for (size_t y1 = 0; y1 < 159; y1 += 19)
+				for (size_t y2 = 0; y2 < 159; y2 += 19)
 					ST7735_Line(x1, y1, x2, y2, ST7735_BLUE);
+	
+	ST7735_Line(0, 158, 128, 0, ST7735_RED);
 }
 
 int main(void)
 {
-	/*
     PLL_Init(Bus80MHz); // 80 MHz
     SYSCTL_RCGCGPIO_R |= 0x20; // activate port F
     ADC0_InitSWTriggerSeq3_Ch9(); // allow time to finish activating
@@ -183,5 +196,6 @@ int main(void)
         DisableInterrupts();
         ProcessADCValues();
     }
-	*/
+	
+	//testDrawLine();
 }

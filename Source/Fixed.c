@@ -1,11 +1,11 @@
-// ******** fixed.h **************
+// ******** fixed.c **************
 // Authors: Ryan Mitchell and Ben Richards
-// Initial Creation Date: 9/3/2018
+// Initial Creation Date: 9/11/2018
 // Description: File to handle fixed point numbers
 // and their applications with the ST7735
-// Lab Number: Lab01
+// Lab Number: Lab02
 // TA: Zee Lv
-// Date of last revision: 9/10/2018
+// Date of last revision: 9/17/2018
 // Hardware Configuration: N/A
 
 #include "Fixed.h"
@@ -151,11 +151,11 @@ void ST7735_XYplotInit(char* title, int32_t minX, int32_t maxX, int32_t minY,
 
 /**
  * Initialize an XY plot with the given dimensions by first clearing the screen.
- * param: title: Title of plot to be printed to the top of the display.
- * param: minX: Minimum x coordinate of the plot.
- * param: maxX: Maximum x coordinate of the plot.
- * param: minY: Minimum y coordinate of the plot.
- * param: maxY: Maximum y coordinate of the plot.
+ * @param: title: Title of plot to be printed to the top of the display.
+ * @param: minX: Minimum x coordinate of the plot.
+ * @param: maxX: Maximum x coordinate of the plot.
+ * @param: minY: Minimum y coordinate of the plot.
+ * @param: maxY: Maximum y coordinate of the plot.
  */
 void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[])
 {
@@ -168,16 +168,28 @@ void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[])
     }
 }
 
+/**
+ * Initialize the PMF plot for the ADC values
+ * @param: ADCSamples: The number of ADC samples from hardware averaging
+ * i.e 1, 4, 16, 64
+ */
 void ST7735_PMFPlotInit(int32_t ADCSamples)
 {
     ST7735_FillRect(0, 0, LCD_PLOT_WIDTH, LCD_PLOT_MIN_Y, ST7735_BLACK); //set screen to black
     ST7735_FillRect(LCD_PLOT_MIN_X, LCD_PLOT_MIN_Y, LCD_PLOT_WIDTH, LCD_PLOT_HEIGHT, ST7735_WHITE); //set white area for the graph
     ST7735_SetCursor(0, 0);
     ST7735_OutString("Lab 2 PMF, averaging\n");
-    ST7735_OutChar(digitToASCII(ADCSamples));
-    ST7735_OutString(" point(s)");
+    //ST7735_OutChar(digitToASCII(ADCSamples));
+    ST7735_OutString("64 point(s)");
 }
 
+/**
+ * Update the PMF with a new set of 1000 data points
+ * @param: minX: minimum ADC value
+ * @param: maxX: maximum ADC value
+ * @param: minY: minimum value occurances for any given ADC value, set to 0
+ * @param: maxY: maximum number of occurances for any given ADC value
+ */
 void ST7735_PMFPlotUpdate(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY, int32_t ADCSamples)
 {
     ST7735_FillRect(LCD_PLOT_MIN_X, LCD_PLOT_MIN_Y, LCD_PLOT_WIDTH, LCD_PLOT_HEIGHT, ST7735_WHITE); //set white area for the graph
@@ -187,6 +199,11 @@ void ST7735_PMFPlotUpdate(int32_t minX, int32_t maxX, int32_t minY, int32_t maxY
     yMax = maxY; //max amount of occurences possible
 }
 
+/**
+ * Plot the ADC PMF graph with the given values and occurances
+ * @param: adcValueOccurances: Hash map with buckets associated with 
+ * given ADC values and their corresponding number of occurances
+ */
 void ST7735_PlotADCPMF(HashMap* adcValueOccurances)
 {
     entry* e = iterate(adcValueOccurances);
